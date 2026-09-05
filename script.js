@@ -4,7 +4,7 @@
 
 
 // URL GOOGLE APPS SCRIPT
-const GOOGLE_SCRIPT_URL = "PASTE_URL_GOOGLE_APPS_SCRIPT_DI_SINI";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwAkJKKfYmcufMuWYR29r776O-dQM5Np_Ku14UK0dfW3cTvhBOVB5gMhCRSiaa8SnTj/exec";
 
 
 // ELEMENT
