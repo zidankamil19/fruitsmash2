@@ -6,7 +6,7 @@
 // KONFIGURASI GOOGLE SHEETS
 // ==========================================
 
-const SPREADSHEET_ID = "AKfycbw6eFta0ekjdH3Y9ljjb2UmVzvrD-AOmOGl7zgCm6DQzGmWuQ46wH40CewrMuRtpJXAOA";
+const SPREADSHEET_ID = "1QA7rnngsTzp1ZMseHBQj8IMvwb9RM0lMnWDXIFdTHqY";
 
 
 // ==========================================
