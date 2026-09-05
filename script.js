@@ -6,7 +6,7 @@
 // KONFIGURASI GOOGLE SHEETS
 // ==========================================
 
-const SPREADSHEET_ID = "1QA7rnngsTzp1ZMseHBQj8IMvwb9RM0lMnWDXIFdTHqY";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw6eFta0ekjdH3Y9ljjb2UmVzvrD-AOmOGl7zgCm6DQzGmWuQ46wH40CewrMuRtpJXAOA/exec";
 
 
 // ==========================================
