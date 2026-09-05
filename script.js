@@ -1,13 +1,18 @@
-// ===================================
-// FRUIT SMASH
-// ===================================
+// ==========================================
+// FRUIT SMASH - SCRIPT.JS
+// ==========================================
 
+// ==========================================
+// KONFIGURASI GOOGLE SHEETS
+// ==========================================
 
-// URL GOOGLE APPS SCRIPT
 const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxcnaalfQkOogi1oIi2OUeS30ebJjWytvvY8FvrH9te3ZcVWsiBqSxQCvtHbzji0rhUKg/exec";
 
 
-// ELEMENT
+// ==========================================
+// AMBIL ELEMENT HTML
+// ==========================================
+
 const homeScreen = document.getElementById("homeScreen");
 const gameScreen = document.getElementById("gameScreen");
 const gameOverScreen = document.getElementById("gameOverScreen");
@@ -26,11 +31,12 @@ const finalScoreElement = document.getElementById("finalScore");
 const gameMessage = document.getElementById("gameMessage");
 
 const leaderboardList = document.getElementById("leaderboardList");
-
 const comboText = document.getElementById("comboText");
 
 
-// GAME DATA
+// ==========================================
+// DATA BUAH
+// ==========================================
 
 const fruits = [
     "🍎",
@@ -40,9 +46,15 @@ const fruits = [
     "🍓",
     "🍍",
     "🥝",
-    "🍒"
+    "🍒",
+    "🍑",
+    "🍋"
 ];
 
+
+// ==========================================
+// VARIABEL GAME
+// ==========================================
 
 let playerName = "";
 let playerPhone = "";
@@ -53,67 +65,66 @@ let time = 60;
 
 let gameRunning = false;
 
-let spawnInterval;
-let timerInterval;
+let spawnInterval = null;
+let timerInterval = null;
 
 
-// ===================================
-// SCREEN
-// ===================================
+// ==========================================
+// GANTI HALAMAN
+// ==========================================
 
 function showScreen(screen) {
 
-    document.querySelectorAll(".screen")
-        .forEach(function(item) {
+    const screens = document.querySelectorAll(".screen");
 
-            item.classList.remove("active");
-
-        });
+    screens.forEach(function(item) {
+        item.classList.remove("active");
+    });
 
     screen.classList.add("active");
-
 }
 
 
-// ===================================
-// START GAME
-// ===================================
+// ==========================================
+// MULAI GAME
+// ==========================================
 
 function startGame() {
 
-    playerName =
-        usernameInput.value.trim();
-
-    playerPhone =
-        phoneInput.value.trim();
+    playerName = usernameInput.value.trim();
+    playerPhone = phoneInput.value.trim();
 
 
+    // VALIDASI USERNAME
     if (playerName.length < 3) {
 
         alert("Username minimal 3 karakter!");
         return;
-
     }
 
 
+    // VALIDASI NOMOR WA
     if (playerPhone.length < 8) {
 
-        alert("Nomor WhatsApp tidak valid!");
+        alert("Masukkan nomor WhatsApp yang valid!");
         return;
-
     }
+
+
+    // SIMPAN DATA PLAYER
+    localStorage.setItem("fruitSmashUsername", playerName);
+    localStorage.setItem("fruitSmashPhone", playerPhone);
 
 
     showScreen(gameScreen);
 
     resetGame();
-
 }
 
 
-// ===================================
+// ==========================================
 // RESET GAME
-// ===================================
+// ==========================================
 
 function resetGame() {
 
@@ -123,191 +134,188 @@ function resetGame() {
 
     gameRunning = true;
 
-    gameArea
-        .querySelectorAll(".game-object")
-        .forEach(function(item) {
 
-            item.remove();
+    // HAPUS OBJECT LAMA
+    const objects = gameArea.querySelectorAll(".game-object");
 
-        });
+    objects.forEach(function(object) {
+        object.remove();
+    });
+
+
+    // HAPUS PARTICLE
+    const particles = gameArea.querySelectorAll(".particle");
+
+    particles.forEach(function(particle) {
+        particle.remove();
+    });
+
+
+    // HAPUS POPUP
+    const popups = gameArea.querySelectorAll(".score-popup");
+
+    popups.forEach(function(popup) {
+        popup.remove();
+    });
 
 
     updateUI();
 
 
+    // HENTIKAN INTERVAL LAMA
     clearInterval(spawnInterval);
     clearInterval(timerInterval);
 
 
-    // Spawn object
-    spawnInterval =
-        setInterval(function() {
+    // SPAWN BUAH
+    spawnInterval = setInterval(function() {
 
-            if (gameRunning) {
+        if (gameRunning) {
 
-                spawnObject();
+            spawnObject();
+        }
 
-            }
-
-        }, 750);
+    }, 700);
 
 
-    // Timer
-    timerInterval =
-        setInterval(function() {
+    // TIMER
+    timerInterval = setInterval(function() {
 
-            if (!gameRunning) return;
-
-            time--;
-
-            updateUI();
+        if (!gameRunning) return;
 
 
-            if (time <= 0) {
+        time--;
 
-                endGame();
+        updateUI();
 
-            }
 
-        }, 1000);
+        if (time <= 0) {
 
+            endGame();
+        }
+
+    }, 1000);
+
+
+    // SPAWN PERTAMA
+    setTimeout(function() {
+
+        if (gameRunning) {
+
+            spawnObject();
+        }
+
+    }, 300);
 }
 
 
-// ===================================
-// SPAWN
-// ===================================
+// ==========================================
+// SPAWN OBJECT
+// ==========================================
 
 function spawnObject() {
 
-    const random =
-        Math.random();
+    if (!gameRunning) return;
 
 
+    const random = Math.random();
+
+
+    // 18% KEMUNGKINAN BOM
     if (random < 0.18) {
 
-        createObject(
-            "💣",
-            "bomb"
-        );
+        createObject("💣", "bomb");
 
-    }
+    } else {
 
-    else {
-
-        const fruit =
+        const randomFruit =
             fruits[
                 Math.floor(
-                    Math.random()
-                    * fruits.length
+                    Math.random() * fruits.length
                 )
             ];
 
-
-        createObject(
-            fruit,
-            "fruit"
-        );
-
+        createObject(randomFruit, "fruit");
     }
-
 }
 
 
-// ===================================
-// CREATE OBJECT
-// ===================================
+// ==========================================
+// MEMBUAT OBJECT
+// ==========================================
 
 function createObject(icon, type) {
 
-    const object =
-        document.createElement("div");
+    const object = document.createElement("div");
+
+    object.className = "game-object " + type;
+
+    object.textContent = icon;
 
 
-    object.className =
-        "game-object " + type;
+    // UKURAN GAME AREA
+    const areaWidth = gameArea.clientWidth;
+    const areaHeight = gameArea.clientHeight;
 
 
-    object.textContent =
-        icon;
+    // POSISI RANDOM
+    const x = Math.random() * (areaWidth - 80);
+
+    const y = 70 + Math.random() * (areaHeight - 180);
 
 
-    const width =
-        gameArea.clientWidth;
-
-    const height =
-        gameArea.clientHeight;
-
-
-    const x =
-        Math.random() *
-        (width - 80);
-
-
-    const y =
-        80 +
-        Math.random() *
-        (height - 180);
-
-
-    object.style.left =
-        x + "px";
-
-    object.style.top =
-        y + "px";
+    object.style.left = Math.max(5, x) + "px";
+    object.style.top = Math.max(50, y) + "px";
 
 
     gameArea.appendChild(object);
 
 
-    object.addEventListener(
-        "pointerdown",
-        function(event) {
+    // EVENT KLIK / TOUCH
+    object.addEventListener("pointerdown", function(event) {
 
-            event.preventDefault();
+        event.preventDefault();
+        event.stopPropagation();
 
-            if (!gameRunning) return;
+        if (!gameRunning) return;
 
 
-            if (type === "bomb") {
+        if (type === "bomb") {
 
-                hitBomb(object);
+            hitBomb(object);
 
-            }
+        } else {
 
-            else {
-
-                hitFruit(
-                    object,
-                    icon
-                );
-
-            }
-
+            hitFruit(object, icon);
         }
-    );
+
+    });
 
 
+    // OBJECT HILANG OTOMATIS
     setTimeout(function() {
 
         if (object.parentNode) {
 
             object.remove();
 
-            combo = 0;
 
-            updateUI();
+            // COMBO RESET JIKA BUAH TIDAK DIKLIK
+            if (gameRunning && type === "fruit") {
 
+                combo = 0;
+
+                updateUI();
+            }
         }
 
-    }, 2500);
-
+    }, 2200);
 }
 
 
-// ===================================
-// HIT FRUIT
-// ===================================
+// ==========================================
+// KLIK BUAH
+// ==========================================
 
 function hitFruit(object, icon) {
 
@@ -320,62 +328,63 @@ function hitFruit(object, icon) {
     let points = 10;
 
 
-    if (combo >= 5) {
-
-        points = 15;
-
-    }
-
-
+    // BONUS COMBO
     if (combo >= 10) {
 
-        points = 20;
+        points = 25;
 
+    } else if (combo >= 5) {
+
+        points = 15;
     }
 
 
     score += points;
 
 
+    // POSISI
+    const x = object.offsetLeft;
+    const y = object.offsetTop;
+
+
+    // ANIMASI
     object.classList.add("smash");
 
 
-    createParticles(
-        object.offsetLeft,
-        object.offsetTop,
-        icon
-    );
+    // PARTICLE
+    createParticles(x, y, icon);
 
 
-    createPopup(
-        object.offsetLeft,
-        object.offsetTop,
-        "+" + points,
-        false
-    );
+    // POPUP SKOR
+    createPopup(x, y, "+" + points, false);
 
 
+    // SOUND
     playFruitSound();
 
 
+    // COMBO
     showCombo();
 
 
+    // HAPUS BUAH
     setTimeout(function() {
 
-        object.remove();
+        if (object.parentNode) {
 
-    }, 300);
+            object.remove();
+        }
+
+    }, 250);
 
 
     updateUI();
-
 }
 
 
-// ===================================
-// BOMB
-// ===================================
+// ==========================================
+// KLIK BOM
+// ==========================================
 
 function hitBomb(object) {
 
@@ -385,88 +394,83 @@ function hitBomb(object) {
     score -= 30;
 
 
+    // SKOR TIDAK BOLEH MINUS
     if (score < 0) {
 
         score = 0;
-
     }
 
 
     combo = 0;
 
 
-    createPopup(
-        object.offsetLeft,
-        object.offsetTop,
-        "-30",
-        true
-    );
+    const x = object.offsetLeft;
+    const y = object.offsetTop;
+
+
+    // UBAH JADI LEDAKAN
+    object.textContent = "💥";
+
+    object.classList.add("smash");
+
+
+    createPopup(x, y, "-30", true);
+
+
+    createExplosion(x, y);
 
 
     playBombSound();
 
 
-    object.textContent = "💥";
-
-
-    object.classList.add("smash");
-
-
     setTimeout(function() {
 
-        object.remove();
+        if (object.parentNode) {
+
+            object.remove();
+        }
 
     }, 300);
 
 
     updateUI();
-
 }
 
 
-// ===================================
-// PARTICLES
-// ===================================
+// ==========================================
+// PARTICLE BUAH
+// ==========================================
 
-function createParticles(
-    x,
-    y,
-    icon
-) {
+function createParticles(x, y, icon) {
 
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 10; i++) {
 
-        const particle =
-            document.createElement("div");
+        const particle = document.createElement("div");
 
+        particle.className = "particle";
 
-        particle.className =
-            "particle";
+        particle.textContent = icon;
 
 
-        particle.textContent =
-            icon;
+        particle.style.left = x + 25 + "px";
+        particle.style.top = y + 25 + "px";
 
 
-        particle.style.left =
-            x + "px";
+        const moveX =
+            (Math.random() - 0.5) * 200;
 
-
-        particle.style.top =
-            y + "px";
+        const moveY =
+            (Math.random() - 0.5) * 200;
 
 
         particle.style.setProperty(
             "--x",
-            ((Math.random() - .5) * 160)
-            + "px"
+            moveX + "px"
         );
-
 
         particle.style.setProperty(
             "--y",
-            ((Math.random() - .5) * 160)
-            + "px"
+            moveY + "px"
         );
 
 
@@ -475,50 +479,90 @@ function createParticles(
 
         setTimeout(function() {
 
-            particle.remove();
+            if (particle.parentNode) {
+
+                particle.remove();
+            }
 
         }, 700);
-
     }
-
 }
 
 
-// ===================================
-// POPUP
-// ===================================
+// ==========================================
+// EFEK LEDAKAN BOM
+// ==========================================
 
-function createPopup(
-    x,
-    y,
-    text,
-    minus
-) {
+function createExplosion(x, y) {
 
-    const popup =
-        document.createElement("div");
+    for (let i = 0; i < 15; i++) {
+
+        const particle = document.createElement("div");
+
+        particle.className = "particle";
+
+        particle.textContent =
+            i % 2 === 0 ? "💥" : "🔥";
 
 
-    popup.className =
-        "score-popup";
+        particle.style.left = x + 20 + "px";
+        particle.style.top = y + 20 + "px";
+
+
+        const moveX =
+            (Math.random() - 0.5) * 250;
+
+        const moveY =
+            (Math.random() - 0.5) * 250;
+
+
+        particle.style.setProperty(
+            "--x",
+            moveX + "px"
+        );
+
+        particle.style.setProperty(
+            "--y",
+            moveY + "px"
+        );
+
+
+        gameArea.appendChild(particle);
+
+
+        setTimeout(function() {
+
+            if (particle.parentNode) {
+
+                particle.remove();
+            }
+
+        }, 700);
+    }
+}
+
+
+// ==========================================
+// POPUP SKOR
+// ==========================================
+
+function createPopup(x, y, text, minus) {
+
+    const popup = document.createElement("div");
+
+    popup.className = "score-popup";
 
 
     if (minus) {
 
         popup.classList.add("minus");
-
     }
 
 
-    popup.textContent =
-        text;
+    popup.textContent = text;
 
-
-    popup.style.left =
-        x + "px";
-
-    popup.style.top =
-        y + "px";
+    popup.style.left = x + "px";
+    popup.style.top = y + "px";
 
 
     gameArea.appendChild(popup);
@@ -526,78 +570,74 @@ function createPopup(
 
     setTimeout(function() {
 
-        popup.remove();
+        if (popup.parentNode) {
+
+            popup.remove();
+        }
 
     }, 800);
-
 }
 
 
-// ===================================
-// COMBO
-// ===================================
+// ==========================================
+// COMBO TEXT
+// ==========================================
 
 function showCombo() {
 
+    if (!comboText) return;
+
+
+    let message = "";
+
+
     if (combo === 5) {
 
-        comboText.textContent =
-            "🔥 NICE COMBO!";
+        message = "🔥 NICE COMBO!";
 
-    }
+    } else if (combo === 10) {
 
-    else if (combo === 10) {
+        message = "⚡ SUPER COMBO!";
 
-        comboText.textContent =
-            "🔥 SUPER COMBO!";
+    } else if (combo === 20) {
 
-    }
-
-    else {
-
-        return;
-
+        message = "👑 LEGENDARY!";
     }
 
 
-    comboText.classList.remove(
-        "combo-animation"
-    );
+    if (message !== "") {
 
+        comboText.textContent = message;
 
-    void comboText.offsetWidth;
+        comboText.classList.remove("combo-animation");
 
+        void comboText.offsetWidth;
 
-    comboText.classList.add(
-        "combo-animation"
-    );
-
+        comboText.classList.add("combo-animation");
+    }
 }
 
 
-// ===================================
+// ==========================================
 // UPDATE UI
-// ===================================
+// ==========================================
 
 function updateUI() {
 
-    scoreElement.textContent =
-        score;
-
-    timeElement.textContent =
-        time;
-
-    comboElement.textContent =
-        combo;
-
+    scoreElement.textContent = score;
+    timeElement.textContent = time;
+    comboElement.textContent = combo;
 }
 
 
-// ===================================
-// END GAME
-// ===================================
+// ==========================================
+// GAME SELESAI
+// ==========================================
 
-function endGame() {
+async function endGame() {
+
+    if (!gameRunning) return;
+
 
     gameRunning = false;
 
@@ -606,281 +646,310 @@ function endGame() {
     clearInterval(timerInterval);
 
 
-    finalScoreElement.textContent =
-        score;
+    // HAPUS BUAH TERSISA
+    const objects = gameArea.querySelectorAll(".game-object");
+
+    objects.forEach(function(object) {
+
+        object.remove();
+    });
 
 
+    finalScoreElement.textContent = score;
+
+
+    // PESAN BERDASARKAN SKOR
     if (score >= 500) {
 
         gameMessage.textContent =
-            "🔥 LUAR BIASA! Kamu sangat hebat!";
+            "👑 LUAR BIASA! Kamu adalah Fruit Master!";
 
-    }
+    } else if (score >= 300) {
 
-    else if (score >= 200) {
+        gameMessage.textContent =
+            "🔥 HEBAT! Kamu sangat jago!";
+
+    } else if (score >= 100) {
 
         gameMessage.textContent =
             "⭐ BAGUS! Terus tingkatkan skormu!";
 
-    }
-
-    else {
+    } else {
 
         gameMessage.textContent =
-            "💪 Jangan menyerah, coba lagi!";
-
+            "💪 Jangan menyerah! Coba lagi!";
     }
 
 
-    saveScore();
-
-
+    // TAMPILKAN GAME OVER
     showScreen(gameOverScreen);
 
+
+    // SIMPAN SKOR KE GOOGLE SHEETS
+    await saveScore();
 }
 
 
-// ===================================
-// SAVE SCORE GOOGLE SHEET
-// ===================================
+// ==========================================
+// SIMPAN SKOR KE GOOGLE SHEETS
+// ==========================================
 
 async function saveScore() {
 
+    // CEK URL
     if (
         GOOGLE_SCRIPT_URL ===
         "PASTE_URL_GOOGLE_APPS_SCRIPT_DI_SINI"
     ) {
 
-        console.log(
-            "Google Sheets belum dikonfigurasi"
+        console.warn(
+            "Google Apps Script URL belum dimasukkan!"
         );
 
         return;
-
     }
 
 
     try {
 
-        await fetch(
-            GOOGLE_SCRIPT_URL,
+        const url =
+            GOOGLE_SCRIPT_URL +
+            "?action=save" +
+            "&username=" +
+            encodeURIComponent(playerName) +
+            "&phone=" +
+            encodeURIComponent(playerPhone) +
+            "&score=" +
+            encodeURIComponent(score);
+
+
+        const response = await fetch(
+            url,
             {
-
-                method: "POST",
-
-                body: JSON.stringify({
-
-                    action: "save",
-
-                    username: playerName,
-
-                    phone: playerPhone,
-
-                    score: score
-
-                })
-
+                method: "GET",
+                mode: "cors"
             }
         );
 
 
         console.log(
-            "Skor berhasil disimpan"
+            "Skor berhasil dikirim!"
         );
 
     }
 
-    catch(error) {
+    catch (error) {
 
         console.error(
-            "Gagal menyimpan:",
+            "ERROR SIMPAN SKOR:",
             error
         );
-
     }
-
 }
 
 
-// ===================================
-// LEADERBOARD
-// ===================================
+// ==========================================
+// TAMPILKAN LEADERBOARD
+// ==========================================
 
 async function showLeaderboard() {
 
-    showScreen(
-        leaderboardScreen
-    );
+    showScreen(leaderboardScreen);
 
 
     leaderboardList.innerHTML =
-        "<p>⏳ Memuat data...</p>";
+        "<p>⏳ Memuat leaderboard...</p>";
 
 
+    // CEK URL
     if (
         GOOGLE_SCRIPT_URL ===
         "PASTE_URL_GOOGLE_APPS_SCRIPT_DI_SINI"
     ) {
 
         leaderboardList.innerHTML =
-            "<p>⚠️ Google Sheets belum dikonfigurasi.</p>";
+            "<p>⚠️ URL Google Apps Script belum dimasukkan!</p>";
 
         return;
-
     }
 
 
     try {
 
-        const response =
-            await fetch(
-                GOOGLE_SCRIPT_URL +
-                "?action=leaderboard"
+        // CACHE BUSTER
+        const url =
+            GOOGLE_SCRIPT_URL +
+            "?action=leaderboard" +
+            "&timestamp=" +
+            Date.now();
+
+
+        const response = await fetch(
+            url,
+            {
+                method: "GET",
+                mode: "cors"
+            }
+        );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Server tidak merespon"
             );
+        }
 
 
         const result =
             await response.json();
 
 
-        renderLeaderboard(
-            result.data
+        console.log(
+            "DATA LEADERBOARD:",
+            result
         );
 
+
+        if (!result.success) {
+
+            throw new Error(
+                "Data leaderboard gagal"
+            );
+        }
+
+
+        renderLeaderboard(result.data);
+
     }
 
-    catch(error) {
+    catch (error) {
 
-        console.error(error);
+        console.error(
+            "ERROR LEADERBOARD:",
+            error
+        );
 
 
-        leaderboardList.innerHTML =
-            "<p>❌ Gagal memuat leaderboard.</p>";
+        leaderboardList.innerHTML = `
 
+            <p style="color:red;font-weight:bold">
+                ❌ Gagal memuat leaderboard
+            </p>
+
+            <br>
+
+            <small>
+                Periksa Google Apps Script dan URL API
+            </small>
+
+        `;
     }
-
 }
 
 
-// ===================================
+// ==========================================
 // RENDER LEADERBOARD
-// ===================================
+// ==========================================
 
 function renderLeaderboard(data) {
 
-    leaderboardList.innerHTML =
-        "";
+    leaderboardList.innerHTML = "";
 
 
-    if (
-        !data ||
-        data.length === 0
-    ) {
+    if (!data || data.length === 0) {
 
-        leaderboardList.innerHTML =
-            "<p>Belum ada pemain.</p>";
+        leaderboardList.innerHTML = `
+            <p>
+                🥺 Belum ada pemain.
+                <br>
+                Jadilah pemain pertama!
+            </p>
+        `;
 
         return;
-
     }
 
 
-    data.forEach(function(
-        player,
-        index
-    ) {
-
-        let medal = "🏅";
-
-
-        if (index === 0) {
-
-            medal = "🥇";
-
-        }
-
-        else if (index === 1) {
-
-            medal = "🥈";
-
-        }
-
-        else if (index === 2) {
-
-            medal = "🥉";
-
-        }
-
+    data.forEach(function(player, index) {
 
         const row =
             document.createElement("div");
 
 
-        row.className =
-            "leader-row";
+        row.className = "leader-row";
+
+
+        let rank = index + 1;
+
+
+        // MEDALI
+        if (index === 0) {
+
+            rank = "🥇";
+
+        } else if (index === 1) {
+
+            rank = "🥈";
+
+        } else if (index === 2) {
+
+            rank = "🥉";
+        }
+
+
+        // USERNAME AMAN
+        const username =
+            escapeHTML(
+                String(player.username || "Player")
+            );
+
+
+        const playerScore =
+            Number(player.score || 0);
 
 
         row.innerHTML = `
-
-            <span>
-                ${medal}
-            </span>
-
-            <span>
-                ${escapeHTML(
-                    player.username
-                )}
-            </span>
-
-            <span>
-                ⭐ ${player.score}
-            </span>
-
+            <span>${rank}</span>
+            <span>${username}</span>
+            <span>⭐ ${playerScore}</span>
         `;
 
 
-        leaderboardList.appendChild(
-            row
-        );
-
+        leaderboardList.appendChild(row);
     });
-
 }
 
 
-// ===================================
-// SECURITY
-// ===================================
+// ==========================================
+// KEAMANAN HTML
+// ==========================================
 
 function escapeHTML(text) {
 
-    const div =
-        document.createElement("div");
+    const div = document.createElement("div");
 
-    div.textContent =
-        text;
+    div.textContent = text;
 
     return div.innerHTML;
-
 }
 
 
-// ===================================
-// PLAY AGAIN
-// ===================================
+// ==========================================
+// MAIN LAGI
+// ==========================================
 
 function playAgain() {
 
     showScreen(gameScreen);
 
     resetGame();
-
 }
 
 
-// ===================================
-// HOME
-// ===================================
+// ==========================================
+// KEMBALI KE HOME
+// ==========================================
 
 function goHome() {
 
@@ -889,16 +958,16 @@ function goHome() {
     clearInterval(spawnInterval);
     clearInterval(timerInterval);
 
-    showScreen(homeScreen);
 
+    showScreen(homeScreen);
 }
 
 
-// ===================================
-// SOUND EFFECT
-// ===================================
+// ==========================================
+// AUDIO SYSTEM
+// ==========================================
 
-let audioContext;
+let audioContext = null;
 
 
 function initAudio() {
@@ -910,89 +979,179 @@ function initAudio() {
                 window.AudioContext ||
                 window.webkitAudioContext
             )();
-
     }
 
+
+    // RESUME JIKA BROWSER MEMBLOKIR AUDIO
+    if (audioContext.state === "suspended") {
+
+        audioContext.resume();
+    }
 }
 
 
+// ==========================================
 // SOUND BUAH
+// ==========================================
 
 function playFruitSound() {
 
-    initAudio();
+    try {
+
+        initAudio();
 
 
-    const oscillator =
-        audioContext.createOscillator();
+        const oscillator =
+            audioContext.createOscillator();
 
-    const gain =
-        audioContext.createGain();
-
-
-    oscillator.frequency.value =
-        700;
+        const gain =
+            audioContext.createGain();
 
 
-    gain.gain.value =
-        0.1;
+        oscillator.type = "sine";
 
 
-    oscillator.connect(gain);
-
-    gain.connect(
-        audioContext.destination
-    );
-
-
-    oscillator.start();
+        oscillator.frequency.setValueAtTime(
+            500,
+            audioContext.currentTime
+        );
 
 
-    oscillator.stop(
-        audioContext.currentTime + .1
-    );
+        oscillator.frequency.exponentialRampToValueAtTime(
+            900,
+            audioContext.currentTime + 0.12
+        );
 
+
+        gain.gain.setValueAtTime(
+            0.15,
+            audioContext.currentTime
+        );
+
+
+        gain.gain.exponentialRampToValueAtTime(
+            0.01,
+            audioContext.currentTime + 0.15
+        );
+
+
+        oscillator.connect(gain);
+
+        gain.connect(
+            audioContext.destination
+        );
+
+
+        oscillator.start();
+
+        oscillator.stop(
+            audioContext.currentTime + 0.15
+        );
+
+    }
+
+    catch (error) {
+
+        console.log("Audio tidak tersedia");
+    }
 }
 
 
+// ==========================================
 // SOUND BOM
+// ==========================================
 
 function playBombSound() {
 
-    initAudio();
+    try {
+
+        initAudio();
 
 
-    const oscillator =
-        audioContext.createOscillator();
+        const oscillator =
+            audioContext.createOscillator();
 
-    const gain =
-        audioContext.createGain();
-
-
-    oscillator.type =
-        "sawtooth";
+        const gain =
+            audioContext.createGain();
 
 
-    oscillator.frequency.value =
-        100;
+        oscillator.type = "sawtooth";
 
 
-    gain.gain.value =
-        0.15;
+        oscillator.frequency.setValueAtTime(
+            150,
+            audioContext.currentTime
+        );
 
 
-    oscillator.connect(gain);
-
-    gain.connect(
-        audioContext.destination
-    );
-
-
-    oscillator.start();
+        oscillator.frequency.exponentialRampToValueAtTime(
+            40,
+            audioContext.currentTime + 0.4
+        );
 
 
-    oscillator.stop(
-        audioContext.currentTime + .4
-    );
+        gain.gain.setValueAtTime(
+            0.2,
+            audioContext.currentTime
+        );
 
-          }
+
+        gain.gain.exponentialRampToValueAtTime(
+            0.01,
+            audioContext.currentTime + 0.4
+        );
+
+
+        oscillator.connect(gain);
+
+        gain.connect(
+            audioContext.destination
+        );
+
+
+        oscillator.start();
+
+        oscillator.stop(
+            audioContext.currentTime + 0.4
+        );
+
+    }
+
+    catch (error) {
+
+        console.log("Audio tidak tersedia");
+    }
+}
+
+
+// ==========================================
+// LOAD DATA PLAYER TERAKHIR
+// ==========================================
+
+window.addEventListener("load", function() {
+
+    const savedUsername =
+        localStorage.getItem(
+            "fruitSmashUsername"
+        );
+
+
+    const savedPhone =
+        localStorage.getItem(
+            "fruitSmashPhone"
+        );
+
+
+    if (savedUsername) {
+
+        usernameInput.value =
+            savedUsername;
+    }
+
+
+    if (savedPhone) {
+
+        phoneInput.value =
+            savedPhone;
+    }
+});
