@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Fruit Smash 🍉</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- HOME -->
+    <section id="homeScreen" class="screen active">
+
+        <div class="home-card">
+
+            <div class="logo">🍉</div>
+
+            <h1>FRUIT<br><span>SMASH!</span></h1>
+
+            <p>Hancurkan buah dan raih skor tertinggi!</p>
+
+            <div class="login-box">
+
+                <label>👤 Username</label>
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Masukkan username"
+                    maxlength="15"
+                >
+
+                <label>📱 Nomor WhatsApp</label>
+                <input
+                    type="tel"
+                    id="phone"
+                    placeholder="Contoh: 08123456789"
+                    maxlength="15"
+                >
+
+                <button onclick="startGame()" class="btn play">
+                    ▶ MULAI BERMAIN
+                </button>
+
+                <button onclick="showLeaderboard()" class="btn leaderboard">
+                    🏆 LEADERBOARD
+                </button>
+
+            </div>
+
+            <div class="instructions">
+
+                <div>
+                    🍎
+                    <small>+10 Poin</small>
+                </div>
+
+                <div>
+                    💣
+                    <small>-30 Poin</small>
+                </div>
+
+                <div>
+                    🔥
+                    <small>Combo</small>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- GAME -->
+    <section id="gameScreen" class="screen">
+
+        <div class="game-container">
+
+            <div class="hud">
+
+                <div class="hud-box">
+                    <small>⭐ SKOR</small>
+                    <strong id="score">0</strong>
+                </div>
+
+                <div class="hud-box">
+                    <small>⏱ WAKTU</small>
+                    <strong id="time">60</strong>
+                </div>
+
+                <div class="hud-box">
+                    <small>🔥 COMBO</small>
+                    <strong id="combo">0</strong>
+                </div>
+
+            </div>
+
+
+            <div id="gameArea">
+
+                <div class="cloud cloud1">☁️</div>
+                <div class="cloud cloud2">☁️</div>
+
+                <div id="comboText"></div>
+
+            </div>
+
+            <p class="tip">
+                👆 Tekan buah untuk menghancurkannya!
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- GAME OVER -->
+    <section id="gameOverScreen" class="screen">
+
+        <div class="result-card">
+
+            <div class="trophy">🏆</div>
+
+            <h2>GAME OVER!</h2>
+
+            <p>Skor kamu</p>
+
+            <h1 id="finalScore">0</h1>
+
+            <p id="gameMessage"></p>
+
+            <button onclick="playAgain()" class="btn play">
+                🔄 MAIN LAGI
+            </button>
+
+            <button onclick="showLeaderboard()" class="btn leaderboard">
+                🏆 LEADERBOARD
+            </button>
+
+            <button onclick="goHome()" class="back">
+                ← Kembali ke Menu
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- LEADERBOARD -->
+    <section id="leaderboardScreen" class="screen">
+
+        <div class="leaderboard-card">
+
+            <div class="trophy">👑</div>
+
+            <h2>LEADERBOARD</h2>
+
+            <p>🏆 Top 10 Fruit Smash</p>
+
+            <div class="leader-title">
+                <span>Rank</span>
+                <span>Username</span>
+                <span>Skor</span>
+            </div>
+
+            <div id="leaderboardList">
+
+                <p>Memuat leaderboard...</p>
+
+            </div>
+
+            <button onclick="goHome()" class="btn play">
+                ← KEMBALI
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
