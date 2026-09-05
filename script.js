@@ -4,7 +4,7 @@
 
 
 // URL GOOGLE APPS SCRIPT
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwAkJKKfYmcufMuWYR29r776O-dQM5Np_Ku14UK0dfW3cTvhBOVB5gMhCRSiaa8SnTj/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxcnaalfQkOogi1oIi2OUeS30ebJjWytvvY8FvrH9te3ZcVWsiBqSxQCvtHbzji0rhUKg/exec";
 
 
 // ELEMENT
