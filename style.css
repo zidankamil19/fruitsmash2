@@ -1,0 +1,458 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Fredoka", sans-serif;
+    background: linear-gradient(180deg, #50c9ff, #d8f8ff);
+    overflow-x: hidden;
+}
+
+.screen {
+    min-height: 100vh;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.screen.active {
+    display: flex;
+}
+
+/* HOME */
+
+.home-card {
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+}
+
+.logo {
+    font-size: 70px;
+    animation: bounce 2s infinite;
+}
+
+.home-card h1 {
+    font-size: 65px;
+    line-height: 0.8;
+    color: white;
+    text-shadow: 0 5px 0 #ff4b73;
+}
+
+.home-card h1 span {
+    color: #ffd633;
+    text-shadow: 0 5px 0 #ff9500;
+}
+
+.home-card > p {
+    margin: 20px 0;
+    font-weight: bold;
+    color: #444;
+}
+
+/* LOGIN */
+
+.login-box {
+    background: white;
+    padding: 25px;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.2);
+    text-align: left;
+}
+
+.login-box label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 15px;
+
+    border-radius: 12px;
+    border: 2px solid #ddd;
+
+    font-size: 16px;
+}
+
+.login-box input:focus {
+    outline: none;
+    border-color: #6c63ff;
+}
+
+/* BUTTON */
+
+.btn {
+    width: 100%;
+    border: none;
+    padding: 15px;
+    border-radius: 14px;
+
+    font-weight: bold;
+    font-size: 16px;
+
+    margin-top: 10px;
+
+    color: white;
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+}
+
+.play {
+    background: linear-gradient(135deg, #ff4778, #ff7b54);
+}
+
+.leaderboard {
+    background: linear-gradient(135deg, #ffbe0b, #ff8c00);
+}
+
+.back {
+    border: none;
+    background: transparent;
+    margin-top: 15px;
+    cursor: pointer;
+    color: #666;
+}
+
+/* INSTRUCTION */
+
+.instructions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.instructions div {
+    flex: 1;
+    background: white;
+    padding: 12px;
+    border-radius: 15px;
+    font-size: 28px;
+    box-shadow: 0 5px 15px rgba(0,0,0,.1);
+}
+
+.instructions small {
+    display: block;
+    font-size: 12px;
+}
+
+/* GAME */
+
+.game-container {
+    width: 100%;
+    max-width: 1000px;
+}
+
+.hud {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.hud-box {
+    flex: 1;
+    text-align: center;
+    background: white;
+    padding: 10px;
+    border-radius: 15px;
+    box-shadow: 0 5px 12px rgba(0,0,0,.15);
+}
+
+.hud-box small {
+    display: block;
+}
+
+.hud-box strong {
+    font-size: 25px;
+}
+
+#gameArea {
+    position: relative;
+
+    height: 70vh;
+    min-height: 450px;
+
+    overflow: hidden;
+
+    border-radius: 25px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #55ccff 0%,
+            #d4f7ff 70%,
+            #62d36e 70%,
+            #43b94d 100%
+        );
+
+    border: 5px solid white;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,.2);
+
+    touch-action: manipulation;
+}
+
+.tip {
+    background: white;
+    padding: 10px;
+    border-radius: 12px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* CLOUD */
+
+.cloud {
+    position: absolute;
+    font-size: 70px;
+    opacity: .7;
+    pointer-events: none;
+}
+
+.cloud1 {
+    top: 30px;
+    left: 10%;
+}
+
+.cloud2 {
+    top: 130px;
+    right: 15%;
+}
+
+/* OBJECT */
+
+.game-object {
+    position: absolute;
+    font-size: 65px;
+
+    cursor: pointer;
+    user-select: none;
+
+    filter: drop-shadow(0 8px 5px rgba(0,0,0,.25));
+
+    animation: appear .3s ease, float 1s infinite alternate;
+
+    z-index: 10;
+}
+
+.game-object.smash {
+    animation: smash .3s forwards;
+    pointer-events: none;
+}
+
+@keyframes appear {
+    from {
+        transform: scale(0) rotate(-180deg);
+    }
+
+    to {
+        transform: scale(1) rotate(0);
+    }
+}
+
+@keyframes float {
+    to {
+        transform: translateY(-10px) rotate(5deg);
+    }
+}
+
+@keyframes smash {
+    to {
+        transform: scale(2) rotate(180deg);
+        opacity: 0;
+    }
+}
+
+@keyframes bounce {
+    50% {
+        transform: translateY(-15px) rotate(10deg);
+    }
+}
+
+/* SCORE POPUP */
+
+.score-popup {
+    position: absolute;
+    font-size: 25px;
+    font-weight: bold;
+    color: white;
+
+    text-shadow: 2px 2px 0 #ff4f81;
+
+    animation: popup .8s forwards;
+
+    pointer-events: none;
+}
+
+.score-popup.minus {
+    text-shadow: 2px 2px 0 red;
+}
+
+@keyframes popup {
+    to {
+        transform: translateY(-80px);
+        opacity: 0;
+    }
+}
+
+/* PARTICLES */
+
+.particle {
+    position: absolute;
+    font-size: 20px;
+    pointer-events: none;
+
+    animation: particle .7s forwards;
+}
+
+@keyframes particle {
+    to {
+        transform:
+            translate(var(--x), var(--y))
+            rotate(360deg);
+
+        opacity: 0;
+    }
+}
+
+/* COMBO */
+
+#comboText {
+    position: absolute;
+    top: 40%;
+    width: 100%;
+
+    text-align: center;
+
+    font-size: 38px;
+    font-weight: bold;
+
+    color: #ff7b00;
+
+    text-shadow: 3px 3px white;
+
+    opacity: 0;
+
+    pointer-events: none;
+}
+
+.combo-animation {
+    animation: combo .8s;
+}
+
+@keyframes combo {
+    40% {
+        opacity: 1;
+        transform: scale(1.3);
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* RESULT */
+
+.result-card,
+.leaderboard-card {
+    width: 100%;
+    max-width: 480px;
+
+    background: white;
+
+    padding: 30px;
+
+    border-radius: 30px;
+
+    text-align: center;
+
+    box-shadow: 0 15px 40px rgba(0,0,0,.2);
+}
+
+.trophy {
+    font-size: 70px;
+}
+
+.result-card h2,
+.leaderboard-card h2 {
+    font-size: 38px;
+    color: #6c63ff;
+}
+
+#finalScore {
+    font-size: 70px;
+    color: #ff4778;
+}
+
+/* LEADERBOARD */
+
+.leader-title,
+.leader-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 70px;
+
+    align-items: center;
+
+    padding: 12px;
+
+    border-radius: 12px;
+}
+
+.leader-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: #777;
+}
+
+.leader-row {
+    margin-bottom: 8px;
+    background: #f4f5ff;
+    font-weight: bold;
+}
+
+.leader-row:nth-child(1) {
+    background: #fff0a8;
+}
+
+.leader-row:nth-child(2) {
+    background: #eeeeee;
+}
+
+.leader-row:nth-child(3) {
+    background: #ffd6ae;
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .home-card h1 {
+        font-size: 55px;
+    }
+
+    #gameArea {
+        height: 65vh;
+        min-height: 420px;
+    }
+
+    .game-object {
+        font-size: 55px;
+    }
+
+    .hud-box strong {
+        font-size: 20px;
+    }
+
+}
